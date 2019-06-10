@@ -1,7 +1,7 @@
 ---
 deployment:
  tasks:
- - export DEPLOYPATH=/home/user/public_html/apt/
+ - export DEPLOYPATH=/home/alpinin/apt/
  - /bin/cp package.json $DEPLOYPATH
  - /bin/cp controller.js $DEPLOYPATH
  - /bin/cp -R common $DEPLOYPATH

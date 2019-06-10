@@ -1,2 +1,1 @@
-# ssk-residency
-Accounting Personal
+

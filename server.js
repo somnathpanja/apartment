@@ -5,7 +5,7 @@ const app = express();
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
 
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
 
 app.get('/', function (req, res) {
     res.writeHead(302, { 'Location': '/login.html' });

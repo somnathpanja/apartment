@@ -2,4 +2,4 @@
 deployment:
  tasks:
  - export DEPLOYPATH=/home/user/public_html/apt/
- - /bin/cp -a $DEPLOYPATH
+ - /bin/cp -R $DEPLOYPATH

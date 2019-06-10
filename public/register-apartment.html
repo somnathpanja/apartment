@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.5">
+    <title>Signin Template · Bootstrap</title>
+    <!-- development version, includes helpful console warnings -->
+    <!-- https://vuelidate.netlify.com/#sub-basic-form -->
+    <link href="bootstrap-4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="bootstrap-4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <script src="validator.js"></script>
+</head>
+
+<body class="container">
+    <div id="app-1" class="container" style="max-width: 400px;">
+        <pre></pre>
+        <h3>Apartment Registration</h3>
+        <pre></pre>
+        <div class="form-group">
+            <p>
+                <label>Apartment Name</label>
+                <input v-model="aptName" placeholder="Apartment name" class="form-control">
+                <small class="form-text text-muted">Max 20 characters.</small>
+            </p>
+            <p>
+                <label>Apartment Address</label>
+                <input v-model="aptAddress" placeholder="Apartment Address" class="form-control">
+                <small class="form-text text-muted">Max 50 characters.</small>
+            </p>
+            <p>
+                <label>Your Name</label>
+                <input v-model="uName" placeholder="Type your name here" class="form-control">
+                <small class="form-text text-muted">Max 20 characters.</small>
+            </p>
+            <p>
+                <label>Mobile Number</label>
+                <input v-model="uMobile" placeholder="Type your Mobile number" class="form-control">
+                <small class="form-text text-muted">+91-XXXXXXXXXX</small>
+            </p>
+            <p>
+                <label>Email</label>
+                <input v-model="email" placeholder="Email Address" class="form-control">
+                <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </p>
+            <p>
+                <label>Password</label>
+                <input type="password" v-model="password" placeholder="Password" class="form-control">
+                <small class="form-text text-muted">8 characters required</small>
+            </p>
+            <h5 id="error" class="form-text text-danger">{{ error }}</h5>
+            <p class="text-center">
+                <button class="btn btn-primary" v-on:click="reverseMessage">Register</button>
+            </p>
+            <p class="text-center">
+                <button class="btn btn-success" onclick="logout()">Already Registered!</button>
+            </p>
+        </div>
+    </div>
+    <script>
+        function logout() { location.href = "login.html"; }
+        var app5 = new Vue({
+            el: '#app-1',
+            data: {
+                aptName: '',
+                aptAddress: '',
+                email: '',
+                uName: '',
+                uMobile: '',
+                password: '',
+                error: ''
+            },
+            methods: {
+                isValid: function () {
+                    //----
+                    var error = validator.required('Apartment Name', this.aptName);
+                    if (error) { this.error = error; return false; }
+
+                    error = validator.maxLength('Apartment Name', this.aptName, 20);
+                    if (error) { this.error = error; return false; }
+                    //----
+                    var error = validator.required('Apartment Address', this.aptAddress);
+                    if (error) { this.error = error; return false; }
+
+                    error = validator.maxLength('Apartment Name', this.aptAddress, 50);
+                    if (error) { this.error = error; return false; }
+                    //----
+                    error = validator.email('Email', this.email);
+                    if (error) { this.error = error; return false; }
+                    //----
+                    var error = validator.required('Your name', this.uName);
+                    if (error) { this.error = error; return false; }
+
+                    error = validator.maxLength('Your name', this.uName, 20);
+                    if (error) { this.error = error; return false; }
+                    //----
+                    var error = validator.required('Mobile number', this.uMobile);
+                    if (error) { this.error = error; return false; }
+
+                    error = validator.minLength('Mobile number', this.uMobile, 10);
+                    if (error) { this.error = error; return false; }
+
+                    error = validator.maxLength('Mobile number', this.uMobile, 14);
+                    if (error) { this.error = error; return false; }
+                    
+                    //----
+                    error = validator.fixedLength('Password', this.password, 8);
+                    if (error) { this.error = error; return false; }
+
+                    this.error = '';
+                    return true;
+                },
+                reverseMessage: function () {
+                    if (!this.isValid()) return;
+
+                    this.$http.post('/register/apartment', {
+                        aptName: this.aptName,
+                        aptAddress: this.aptAddress,
+                        email: this.email,
+                        uName: this.uName,
+                        uMobile: this.uMobile,
+                        password: this.password
+                    }).then(function onSuccess(data) {
+                        window.location.href = 'login.html';
+                    }, function onError(data) {
+                        alert(data);
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

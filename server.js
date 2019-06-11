@@ -1,11 +1,14 @@
 const controller = require('./controller.js');
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
+const path = require('path');
 
-app.use(express.json());       // to support JSON-encoded bodies
-app.use(express.urlencoded()); // to support URL-encoded bodies
 
-app.use(express.static(__dirname + '/public'));
+app.use(bodyParser.json());       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // to support URL-encoded bodies
+
+app.use(express.static(path.join(__dirname, 'public')))
 
 app.get('/', function (req, res) {
     res.writeHead(302, { 'Location': '/login.html' });

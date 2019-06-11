@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const path = require('path');
-
+const http = require('http');
 
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // to support URL-encoded bodies
@@ -52,4 +52,5 @@ app.route('/expense/year/:year/month/:month:/day/:day')
         res.send('Update the book')
     });
 
-app.listen(5047);
+const server = http.createServer(app);
+server.listen(3000);

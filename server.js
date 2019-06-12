@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // to support URL-encoded bo
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.get('/', function (req, res) {
-    res.writeHead(302, { 'Location': 'apartment/login.html' });
+    res.writeHead(302, { 'Location': '/login.html' });
     res.end();
 });
 

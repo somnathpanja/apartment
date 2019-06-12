@@ -7,4 +7,3 @@ deployment:
  - /bin/cp controller.js $DEPLOYPATH
  - /bin/cp -R common $DEPLOYPATH
  - /bin/cp -R public $DEPLOYPATH
- - /bin/cp -R node_modules $DEPLOYPATH

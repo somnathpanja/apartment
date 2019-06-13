@@ -56,7 +56,10 @@ function query(query, data = []) {
 global._con = {
     insert,
     update,
-    query
+    query,
+    pool: function() {
+        return pool;
+    }
 };
 
 module.exports = global._con;
@@ -64,4 +67,13 @@ module.exports = global._con;
 // pool.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
 //   if (error) throw error;
 //   console.log('The solution is: ', results[0].solution);
+// });
+// q = 'INSERT INTO session (email, auth, isAdmin) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE auth = ?';
+
+// q = 'INSERT INTO session (email, auth, isAdmin) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE auth = ?';
+// db.query(q, [data.email, data.auth, data.isAdmin, data.auth]).then(() => {
+//     res.status(200).send(data);
+//     resolve();
+// }).catch((err) => {
+//     reject(err);
 // });

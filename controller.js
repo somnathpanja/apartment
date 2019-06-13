@@ -87,12 +87,13 @@ function login(req, res) {
                 data.aptId = results[0].id;
                 resolve();
             } else {
-                q = `SELECT id, aptId, uName FROM user WHERE email = ? AND password = ?`;
+                q = `SELECT id, aptId, flatNumber, uName FROM user WHERE email = ? AND password = ?`;
                 db.query(q, [req.body.email, req.body.password]).then((results) => {
-                    if (results.length) {                       
+                    if (results.length) {
                         data.useId = results[0].id;
                         data.aptId = results[0].aptId;
                         data.uName = results[0].uName;
+                        data.flatNumber = results[0].flatNumber;
                         resolve();
                     } else {
                         reject('Invalid login details!');
@@ -102,16 +103,24 @@ function login(req, res) {
         });
     }).then(function updateSession() {
         return new Promise(function (resolve, reject) {
-            q = 'INSERT INTO session (email, auth, isAdmin) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE auth = ?';
-            db.query(q, [data.email, data.auth, data.isAdmin, data.auth]).then(() => {
-                res.status(200).send(data);
-                resolve();
-            }).catch((err) => {
-                reject(err);
-            });
+            req.session.email = data.email;
+            req.session.useId = data.useId;
+            req.session.aptId = data.aptId;
+            req.session.isAdmin = data.isAdmin;
+            req.session.uName = data.uName;
+            req.session.flatNumber = data.flatNumber;
+            res.status(200).send('Success');
+            resolve();
         });
     }).catch((err) => {
-        res.status(500).send(err);
+        req.session.destroy((err) => {
+            if (err) {
+                console.log(err);
+            }
+
+            res.status(500).send(err);
+        });
+
     });
 }
 

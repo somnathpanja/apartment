@@ -77,14 +77,7 @@
                         email: this.email,
                         password: this.password
                     }).then(function onSuccess(res) {
-                        let data = res.body;
-                        if(data.isAdmin === 1){
-                            data.path = 'admin-home.html';
-                        } else {
-                            data.path = 'user-home.html';
-                        }
-
-                        window.location.href = data.path + '?auth=' + data.auth + "&admin=" + data.isAdmin+'&uName=' + data.uName;
+                        window.location.href = '/';
                     }, function onError(data) {
                         alert(JSON.stringify(data));
                     });

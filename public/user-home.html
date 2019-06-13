@@ -21,6 +21,7 @@
     <div id="app-1" class="container" style="max-width: 400px;">
         <pre></pre>
         <h3>Welcome {{ uName }}!</h3>
+        <small class="form-text text-muted">{{ email }} | {{ flatNumber }} | IP: {{ ip }}</small>
         <pre></pre>
         <div class="form-group">
             <p class="text-center">
@@ -53,10 +54,7 @@
                 this.$nextTick(function () {
                     // Code that will run only after the
                     // entire view has been rendered
-                    this.uName = this.params('uName');
-                    if (!this.params('auth')) {
-                        location.href = "login.html";
-                    }
+                    this.who();
                 });
             },
             methods: {
@@ -65,6 +63,22 @@
                     var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
                     var results = regex.exec(location.search);
                     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+                },
+                who: function(){
+                    var self = this;
+                    this.$http.get('/who').then(function onSuccess(res) {
+                        let data = res.body;
+                        self.uName = data.uName;
+                        self.email = data.email;
+                        self.flatNumber = data.flatNumber;
+                        self.ip = data.ip;
+                        if(!self.email) {
+                            window.location.href = 'login.html';
+                        }
+                    }, function onError(data) {
+                        alert(JSON.stringify(data));
+                        window.location.href = 'login.html';
+                    });
                 },
                 reverseMessage: function () {
                     if (!this.isValid()) return;

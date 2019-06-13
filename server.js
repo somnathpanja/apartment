@@ -46,7 +46,7 @@ app.get('/who', function (req, res) {
             useId: sess.useId,
             aptId: sess.aptId,
             flatNumber: sess.flatNumber,
-            ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress
+            ip: (req.headers['x-forwarded-for'] || req.connection.remoteAddress).replace('::ffff:', '')
         });
     } else {
         res.status(401).send('');

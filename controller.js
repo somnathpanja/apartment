@@ -128,15 +128,27 @@ function login(req, res) {
  * 
  * @param {*} req 
  * @param {*} res 
- *                      fromDate: this.fromDate,
-                        toDate: this.toDate,
+                        date: this.date,
                         byCheck: this.byCheck,
                         checkNumber: this.checkNumber,
                         amount: this.amount,
                         receivedBy: this.receivedBy
  */
 function addMaintanance(req, res) {
-    console.log('HI');
+    let data = {
+        date: req.body.date,
+        flatNumber: req.body.flatNumber,
+        amount: Number(req.body.amount),
+        receivedBy: req.body.receivedBy
+    };
+
+    if (req.body.byCheck) data.checkNumber = req.body.checkNumber;
+
+    db.insert('maintanance', data).then(() => {
+        res.status(200).send('success');
+    }).catch((err) => {
+        res.status(500).send(err);
+    });
 }
 
 /**
@@ -149,7 +161,20 @@ function addMaintanance(req, res) {
                         paidBy: this.paidBy
  */
 function addExpenses(req, res) {
-    console.log('HI');
+    let data = {
+        date: Number(req.body.date),
+        expenseFor: req.body.expenseFor,
+        amount: Number(req.body.amount),
+        paidBy: req.body.paidBy
+    };
+
+    if (req.body.byCheck) data.checkNumber = req.body.checkNumber;
+
+    db.insert('expense', data).then(() => {
+        res.status(200).send('success');
+    }).catch((err) => {
+        res.status(500).send(err);
+    });
 }
 
 module.exports = {

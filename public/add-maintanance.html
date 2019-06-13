@@ -25,12 +25,8 @@
         <pre></pre>
         <div class="form-group">
             <p>
-                <label>From Date:</label>
-                <input v-model="fromDate" type="date" placeholder="Amount" class="form-control">
-            </p>
-            <p>
-                <label>To Date:&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                <input v-model="toDate" type="date" placeholder="Amount" class="form-control">
+                <label>Date:</label>
+                <input v-model="date" type="date" placeholder="Date" class="form-control">
             </p>
             <p>
                 <label>Flat Number</label>
@@ -60,7 +56,7 @@
             </p>
             <p>
                 <label>Received By (Your Name)</label>
-                <input v-model="receivedBy" placeholder="Your Name" class="form-control">
+                <input v-model="receivedBy" disabled="true" v-bind:placeholder="uName" class="form-control">
             </p>
             <h5 id="error" class="form-text text-danger">{{ error }}</h5>
             <p class="text-center">
@@ -72,8 +68,8 @@
         var app5 = new Vue({
             el: '#app-1',
             data: {
-                fromDate: '',
-                toDate: '',
+                date: new Date(),
+                flatNumber: '',
                 byCheck: false,
                 checkNumber: '',
                 amount: 0,
@@ -122,8 +118,8 @@
                     if (!this.isValid()) return;
 
                     this.$http.post('/maintance/add', {
-                        fromDate: this.fromDate,
-                        toDate: this.toDate,
+                        date: new Date(this.date).getTime(),
+                        flatNumber: this.flatNumber,
                         byCheck: this.byCheck,
                         checkNumber: this.checkNumber,
                         amount: this.amount,

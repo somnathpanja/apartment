@@ -26,8 +26,7 @@
     <div id="app-1" class="container" style="max-width: 400px;">
         <pre></pre>
         <h3>People</h3>
-        <small class="form-text text-muted">{{ uName }} | {{ email }} | {{ ip }} | All activities will be logged for
-            auditing.</small>
+        <small class="form-text text-muted">{{ uName }} | {{ email }} | {{ ip }} | <a href="/" style="text-decoration: underline;"> Home</a></small> 
         <pre></pre>
         <table class="h6 table" style="border: 1; padding:2rem;">
             <thead>
@@ -48,26 +47,6 @@
                 </tr>
             </tbody>
         </table>
-        <!-- <div class="container">
-                <div class="row border font-weight-bold">
-                <div class="col-sm">Flat</div>
-                <div class="col-sm border-left">Name</div>
-                <div class="col-sm border-left">Mobile</div>
-                <div class="col-sm">Email</div>
-            </div>
-            <div v-for="item in addressBook" class="row border" >
-                <div class="col-sm">{{ item.flatNumber }}</div>
-                <div class="col-sm border-left">{{ item.uName }}</div>
-                <div class="col-sm border-left">
-                    <a role="button" class="btn btn-info btn-sm" v-bind:href="'tel:' + item.uMobile">Call</a>
-                </div>
-                <div class="col-sm border-left">
-                    <a role="button" class="btn btn-info btn-sm" v-bind:href="'mailto:' + item.email">Email</a>
-                </div>
-            </div> 
-        </div>
-        -->
-
         <div class="form-group">
             <p class="text-center">
                 <button class="btn btn-warning" onclick="go_home()">Home</button>

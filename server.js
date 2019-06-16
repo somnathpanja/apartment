@@ -69,7 +69,7 @@ app.get('/', function (req, res) {
 app.get('/who', function (req, res) {
     let sess = req.session;
     if (sess.user) {
-        sess.user.ip = (req.headers['x-forwarded-for'] || req.connection.remoteAddress).replace('::ffff:', '')
+        sess.user.ip = req.ip;
         res.json(sess.user);
     } else {
         res.status(401).send('');

@@ -23,8 +23,7 @@
     <div id="app-1" class="container" style="max-width: 400px;">
         <pre></pre>
         <h3>Accept Maintanance</h3>
-        <small class="form-text text-muted">{{ uName }} | {{ email }} | {{ ip }} | All activities will be logged for
-            auditing.</small>
+        <small class="form-text text-muted">{{ uName }} | {{ email }} | {{ ip }} | <a href="/" style="text-decoration: underline;"> Home</a></small> 
         <pre></pre>
         <div class="form-group">
             <p>
@@ -72,11 +71,11 @@
         var app5 = new Vue({
             el: '#app-1',
             data: {
-                date: new Date(),
+                date: '',
                 flatNumber: '',
                 byCheck: false,
                 checkNumber: '',
-                amount: 0,
+                amount: '',
                 receivedBy: '',
                 error: '',
                 //---extra
@@ -92,6 +91,31 @@
                 });
             },
             methods: {
+                isValid: function () {
+                    //--
+                    var error = validator.required('Date', this.date);
+                    if (error) { this.error = error; return false; }
+
+                    //--
+                    var error = validator.required('Flat Number', this.flatNumber);
+                    if (error) { this.error = error; return false; }
+
+                    //--
+                    error = validator.required('Amount', this.amount);
+                    if (error) { this.error = error; return false; }
+                    error = validator.isNumber('Amount', this.amount);
+                    if (error) { this.error = error; return false; }
+
+                    //--
+                    if (this.byCheck) {
+                        error = validator.required('Check number', this.checkNumber);
+                        if (error) { this.error = error; return false; }
+                        error = validator.isNumber('Check number', this.checkNumber);
+                        if (error) { this.error = error; return false; }
+                    }
+                    this.error = '';
+                    return true;
+                },
                 params: function (name) {
                     name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
                     var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -114,11 +138,7 @@
                         window.location.href = 'login.html';
                     });
                 },
-                isValid: function () {
 
-                    this.error = '';
-                    return true;
-                },
                 reverseMessage: function () {
                     if (!this.isValid()) return;
 

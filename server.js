@@ -8,54 +8,73 @@ const path = require('path');
 const http = require('http');
 
 var MySQLStore = require('express-mysql-session')(session);
-var sessionStore = new MySQLStore({}, mysql.pool());
+
+var sessionStore = new MySQLStore({
+    // Whether or not to automatically check for and clear expired sessions:
+    clearExpired: true,
+    // How frequently expired sessions will be cleared; milliseconds:
+    checkExpirationInterval: 900000,
+    // The maximum age of a valid session; milliseconds:
+    expiration: 86400000
+}, mysql.pool());
 
 app.use(session({
+    key: "user_me",
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true,
     store: sessionStore,
-    maxAge: 1800000  //30 mins
+    maxAge: 900000  //15 mins
 }));
 
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // to support URL-encoded bodies
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', function (req, res) {
-    let sess = req.session;
-    if (sess.isAdmin) {
-        res.redirect('/admin-home.html');
-    } else if (sess.email) {
-        res.redirect('/user-home.html');
-    } else {
-        res.writeHead(302, { 'Location': '/login.html' });
-        res.end();
+// middleware function to check for logged-in users
+var isUser = (req, res, next) => {
+    if (req.session && req.session.user) {
+        next();
+        return;
     }
 
-    res.end();
+    res.redirect('/');
+};
+
+var isAdmin = (req, res, next) => {
+    if (req.session && req.session.user && req.session.user.isAdmin) {
+        next();
+        return;
+    }
+
+    res.redirect('/');
+};
+
+app.get('/', function (req, res) {
+    let sess = req.session;
+    if (sess.user && sess.user.email) {
+        if (sess.user.isAdmin) {
+            res.redirect('/admin-home.html');
+        } else {
+            res.redirect('/user-home.html');
+        }
+    } else {
+        req.session.destroy((err) => {
+            res.writeHead(302, { 'Location': '/login.html' });
+            res.end();
+        });
+    }
 });
 
 app.get('/who', function (req, res) {
     let sess = req.session;
-    if (sess.email) {
-        res.json({
-            isAdmin: sess.isAdmin,
-            email: sess.email,
-            uName: sess.uName,
-            useId: sess.useId,
-            aptId: sess.aptId,
-            flatNumber: sess.flatNumber,
-            ip: (req.headers['x-forwarded-for'] || req.connection.remoteAddress).replace('::ffff:', '')
-        });
+    if (sess.user) {
+        sess.user.ip = (req.headers['x-forwarded-for'] || req.connection.remoteAddress).replace('::ffff:', '')
+        res.json(sess.user);
     } else {
         res.status(401).send('');
     }
 });
-
-function validateSession(req, res, next) {
-    next();
-}
 
 app.post('/register/user', function (req, res) {
     controller.residentReg(req, res);
@@ -74,30 +93,31 @@ app.post('/login', function (req, res) {
 });
 
 app.get('/logout', (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            return console.log(err);
-        }
-        res.redirect('/');
-    });
+    if (req.session) {
+        req.session.destroy((err) => {
+            if (err) {
+                return console.log(err);
+            }
+            res.redirect('/');
+        });
+    }
 });
 
-app.post('/maintance/add', validateSession, function (req, res) {
+app.post('/maintance/add', isUser, isAdmin, function (req, res) {
     controller.addMaintanance(req, res);
 });
 
-app.post('/expense/add', validateSession, function (req, res) {
+app.post('/expense/add', isUser, isAdmin, function (req, res) {
     controller.addExpenses(req, res);
 });
 
-app.route('/expense/year/:year/month/:month:/day/:day')
-    .get(function (req, res) {
-        res.send('Get a random book')
-    }).post(function (req, res) {
-        res.send('Add a book')
-    }).put(function (req, res) {
-        res.send('Update the book')
-    });
+app.get('/addressbook', isUser, isAdmin, function (req, res) {
+    controller.getAddressBook(req, res);
+});
+
+app.post('/expense/get', function (req, res) {
+    controller.getExpances(req, res);
+});
 
 const server = http.createServer(app);
 server.listen(5867);

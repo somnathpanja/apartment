@@ -10,6 +10,8 @@
     <title>Signin Template · Bootstrap</title>
     <!-- development version, includes helpful console warnings -->
     <!-- https://vuelidate.netlify.com/#sub-basic-form -->
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
     <link href="bootstrap-4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <script src="bootstrap-4.3.1/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -30,12 +32,28 @@
                 <input v-model="date" type="date" placeholder="Date" class="form-control">
             </p>
             <p>
-                <label>Expense for</label>
-                <input v-model="expenseFor" placeholder="Expense for" class="form-control">
+                <table>
+                    <tr>
+                        <tr>
+                            <td colspan="2"><label>Description</label></td>
+                        </tr>
+                        <td><input v-model="expenseFor" placeholder="Expense for" class="form-control"></td>
+                        <td style="width: 30%;">
+                            <select v-model="expenseFor" class="form-control">
+                                <option></option>
+                                <option>Security Salary</option>
+                                <option>HK Salary</option>
+                                <option>Diesel Generator</option>
+                                <option value="">Others</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <small class="form-text text-muted">Min 8, Max 20 characters</small>
             </p>
             <p>
                 <label>Amount (Rs.)</label>
-                <input v-model="amount" placeholder="Amount" class="form-control">
+                <input v-model="amount" placeholder="" class="form-control">
             </p>
             <p>
                 <label>Paid By Check?</label>
@@ -65,7 +83,7 @@
             data: {
                 date: '',
                 expenseFor: '',
-                amount: 0,
+                amount: '',
                 byCheck: false,
                 checkNumber: '',
                 paidBy: '',
@@ -83,6 +101,38 @@
                 });
             },
             methods: {
+                isValid: function () {
+                    //--
+                    var error = validator.required('Date', this.date);
+                    if (error) { this.error = error; return false; }
+
+                    //--
+                    error = validator.required('Description', this.expenseFor);
+                    if (error) { this.error = error; return false; }
+
+                    error = validator.minLength('Description', this.expenseFor, 4);
+                    if (error) { this.error = error; return false; }
+
+                    error = validator.maxLength('Description', this.expenseFor, 20);
+                    if (error) { this.error = error; return false; }
+
+                    //--
+                    error = validator.required('Amount', this.amount);
+                    if (error) { this.error = error; return false; }
+                    error = validator.isNumber('Amount', this.amount);
+                    if (error) { this.error = error; return false; }
+
+                    //--
+                    if (this.byCheck) {
+                        error = validator.required('Check number', this.checkNumber);
+                        if (error) { this.error = error; return false; }
+                        error = validator.isNumber('Check number', this.checkNumber);
+                        if (error) { this.error = error; return false; }
+                    }
+
+                    this.error = '';
+                    return true;
+                },
                 params: function (name) {
                     name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
                     var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -96,24 +146,20 @@
                         self.uName = data.uName;
                         self.email = data.email;
                         self.ip = data.ip;
-                        if (!self.email) {
+                        if (!self.email && !self.isAdmin) {
+                            alert('Session Expired...! Please login again!');
                             window.location.href = 'login.html';
                         }
                     }, function onError(data) {
-                        alert(JSON.stringify(data));
+                        alert('Session Expired...! Please login again!');
                         window.location.href = 'login.html';
                     });
                 },
-                isValid: function () {
-
-                    this.error = '';
-                    return true;
-                },
                 reverseMessage: function () {
                     if (!this.isValid()) return;
-
+                    let dt = new Date(this.date).getTime();
                     this.$http.post('/expense/add', {
-                        date: new Date(this.date).getTime(),
+                        date: dt,
                         expenseFor: this.expenseFor,
                         amount: this.amount,
                         byCheck: this.byCheck,
@@ -123,7 +169,8 @@
                         alert('Saved Successfully..');
                         window.location.href = 'admin-home.html';
                     }, function onError(data) {
-                        alert(JSON.stringify(data));
+                        alert('Session Expired...! Please login again!');
+                        window.location.href = 'login.html';
                     });
                 }
             }

@@ -16,47 +16,80 @@
     <script src="bootstrap-4.3.1/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <!-- <script src="https://unpkg.com/vue/dist/vue.js"></script> -->
+    <!-- <script src="https://unpkg.com/vue-cookies@1.5.12/vue-cookies.js"></script> -->
     <script src="validator.js"></script>
+    <link href="css/my.css" rel="stylesheet">
 </head>
 
 <body class="container">
     <div id="app-1" class="container" style="max-width: 400px;">
         <pre></pre>
-        <h3>Welcome {{ uName }}!</h3>
-        <small class="form-text text-muted">{{ email }} | {{ flatNumber }} | IP: {{ ip }}</small>
+        <h3>People</h3>
+        <small class="form-text text-muted">{{ uName }} | {{ email }} | {{ ip }} | All activities will be logged for
+            auditing.</small>
         <pre></pre>
+        <table class="h6 table" style="border: 1; padding:2rem;">
+            <thead>
+                <th style="background-color:#e3ebf7">Flat</th>
+                <th style="background-color:#eef9de">Name</th>
+                <th colspan="2" style="background-color:#f2f0e3">Action</th>
+            </thead>
+            <tbody>
+                <tr v-for="item in addressBook">
+                    <td style="background-color:#e3ebf7">{{ item.flatNumber }}</td>
+                    <td style="background-color:#eef9de">{{ item.uName }}</td>
+                    <td style="background-color:#f2f0e3">
+                        <a role="button" class="btn btn-info btn-sm" v-bind:href="'tel:' + item.uMobile">Call</a>
+                    </td>
+                    <td style="background-color:#f2f0e3">
+                        <a role="button" class="btn btn-info btn-sm" v-bind:href="'mailto:' + item.email">Email</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- <div class="container">
+                <div class="row border font-weight-bold">
+                <div class="col-sm">Flat</div>
+                <div class="col-sm border-left">Name</div>
+                <div class="col-sm border-left">Mobile</div>
+                <div class="col-sm">Email</div>
+            </div>
+            <div v-for="item in addressBook" class="row border" >
+                <div class="col-sm">{{ item.flatNumber }}</div>
+                <div class="col-sm border-left">{{ item.uName }}</div>
+                <div class="col-sm border-left">
+                    <a role="button" class="btn btn-info btn-sm" v-bind:href="'tel:' + item.uMobile">Call</a>
+                </div>
+                <div class="col-sm border-left">
+                    <a role="button" class="btn btn-info btn-sm" v-bind:href="'mailto:' + item.email">Email</a>
+                </div>
+            </div> 
+        </div>
+        -->
+
         <div class="form-group">
             <p class="text-center">
-                <button class="btn btn-warning" onclick="download_me_slip()">Download Maintanance Paid Slip</button>
-            </p>
-            <!-- <p class="text-center">
-                    <button class="btn btn-success" onclick="email_me_slip()">Email Me Maintanance Paid Slip</button>
-            </p> -->
-            <p class="text-center">
-                <button class="btn btn-info" onclick="view_expenses()">View Apartment Expenses</button>
-            </p>
-            <p class="text-center">
-                <button class="btn btn-primary" onclick="logout()">Logout</button>
+                <button class="btn btn-warning" onclick="go_home()">Home</button>
             </p>
         </div>
     </div>
     <script>
 
-        function download_me_slip() { location.href = "register-resident.html"; }
-        function email_me_slip() { location.href = "register-apartment.html"; }
-        function view_expenses() { location.href = "view-expenses.html"; }
-        function logout() { location.href = "login.html"; }
+        function go_home() { location.href = "/"; }
 
         var app5 = new Vue({
             el: '#app-1',
             data: {
-                uName: ''
+                uName: '',
+                email: '',
+                ip: '',
+                addressBook: {}
             },
             mounted: function () {
                 this.$nextTick(function () {
-                    // Code that will run only after the
-                    // entire view has been rendered
                     this.who();
+                    this.getData();
                 });
             },
             methods: {
@@ -72,10 +105,8 @@
                         let data = res.body;
                         self.uName = data.uName;
                         self.email = data.email;
-                        self.flatNumber = data.flatNumber;
                         self.ip = data.ip;
                         if (!self.email) {
-                            alert('Session Expired...! Please login again!');
                             window.location.href = 'login.html';
                         }
                     }, function onError(data) {
@@ -83,16 +114,10 @@
                         window.location.href = 'login.html';
                     });
                 },
-                reverseMessage: function () {
-                    if (!this.isValid()) return;
-                    this.error = '';
-                    alert('valid');
-
-                    this.$http.post('/login', {
-                        email: this.email,
-                        password: this.password
-                    }).then(function onSuccess(data) {
-                        window.location.href = 'home.html?token=' + data.token;
+                getData: function () {
+                    var self = this;
+                    this.$http.get('/addressbook').then(function onSuccess(res) {
+                        self.addressBook = res.body;
                     }, function onError(data) {
                         alert('Session Expired...! Please login again!');
                         window.location.href = 'login.html';

@@ -10,6 +10,8 @@
     <title>Signin Template · Bootstrap</title>
     <!-- development version, includes helpful console warnings -->
     <!-- https://vuelidate.netlify.com/#sub-basic-form -->
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
     <link href="bootstrap-4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <script src="bootstrap-4.3.1/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -34,6 +36,7 @@
                 <label>Flat Number</label>
                 <select v-model="flatNumber" placeholder="Flat Number" class="form-control">
                     <option disabled value="">Please select one</option>
+                    <option v-for="n in 8">G-00{{ n }}</option>
                     <option v-for="n in 8">SF-10{{ n }}</option>
                     <option v-for="n in 8">SF-20{{ n }}</option>
                     <option v-for="n in 8">SF-30{{ n }}</option>
@@ -59,14 +62,14 @@
             <p>
                 <label>Password</label>
                 <input type="password" v-model="password" placeholder="Password" class="form-control">
-                <small class="form-text text-muted">8 characters required</small>
+                <small class="form-text text-muted">Min 8, Max 20 characters required</small>
             </p>
             <h5 id="error" class="form-text text-danger">{{ error }}</h5>
             <p class="text-center">
                 <button class="btn btn-primary" v-on:click="reverseMessage">Register</button>
             </p>
             <p class="text-center">
-                    <button class="btn btn-success" onclick="logout()">Already Registered!</button>
+                <button class="btn btn-success" onclick="logout()">Already Registered!</button>
             </p>
         </div>
     </div>
@@ -114,7 +117,10 @@
                     if (error) { this.error = error; return false; }
 
                     //----
-                    error = validator.fixedLength('Password', this.password, 8);
+                    error = validator.minLength('Password', this.password, 8);
+                    if (error) { this.error = error; return false; }
+
+                    error = validator.maxLength('Password', this.password, 20);
                     if (error) { this.error = error; return false; }
 
                     this.error = '';
@@ -126,10 +132,10 @@
                     this.$http.post('/register/user', {
                         aptId: this.aptId,
                         flatNumber: this.flatNumber,
-                        email: this.email,
-                        uName: this.uName,
-                        uMobile: this.uMobile,
-                        password: this.password
+                        email: this.email.toLowerCase().trim(),
+                        uName: this.uName.trim(),
+                        uMobile: this.uMobile.trim(),
+                        password: this.password.trim()
                     }).then(function onSuccess(data) {
                         window.location.href = 'login.html';
                     }, function onError(data) {

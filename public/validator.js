@@ -34,3 +34,10 @@ validator.fixedLength = function (fieldName, val, length) {
         return 'Error: ' + fieldName + ' must be exactly ' + length + ' characters!';
     }
 }
+
+validator.isNumber = function (fieldName, val, length) {
+    val = Number((val + '').trim());
+    if (isNaN(val)) {
+        return 'Error: ' + fieldName + ' must be numeric!';
+    }
+}

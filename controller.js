@@ -1,4 +1,5 @@
-var db = require('./common/mysql')
+var db = require('./common/mysql');
+var utils = require('./common/utils');
 
 /**
  * 
@@ -15,7 +16,7 @@ function apartmentReg(req, res) {
     let data = {
         name: req.body.aptName,
         address: req.body.aptAddress,
-        email: req.body.email,
+        email: req.body.email.toLowerCase(),
         password: req.body.password,
         uName: req.body.uName,
         uMobile: req.body.uMobile
@@ -43,7 +44,7 @@ function residentReg(req, res) {
     let data = {
         aptId: Number(req.body.aptId),
         flatNumber: req.body.flatNumber,
-        email: req.body.email,
+        email: req.body.email.toLowerCase(),
         uName: req.body.uName,
         uMobile: req.body.uMobile,
         password: req.body.password
@@ -87,12 +88,13 @@ function login(req, res) {
                 data.aptId = results[0].id;
                 resolve();
             } else {
-                q = `SELECT id, aptId, flatNumber, uName FROM user WHERE email = ? AND password = ?`;
+                q = `SELECT id, aptId, flatNumber, uName, isAdmin FROM user WHERE email = ? AND password = ?`;
                 db.query(q, [req.body.email, req.body.password]).then((results) => {
                     if (results.length) {
                         data.useId = results[0].id;
                         data.aptId = results[0].aptId;
                         data.uName = results[0].uName;
+                        data.isAdmin = results[0].isAdmin;
                         data.flatNumber = results[0].flatNumber;
                         resolve();
                     } else {
@@ -103,12 +105,14 @@ function login(req, res) {
         });
     }).then(function updateSession() {
         return new Promise(function (resolve, reject) {
-            req.session.email = data.email;
-            req.session.useId = data.useId;
-            req.session.aptId = data.aptId;
-            req.session.isAdmin = data.isAdmin;
-            req.session.uName = data.uName;
-            req.session.flatNumber = data.flatNumber;
+            req.session.user = {
+                email: data.email,
+                useId: data.useId,
+                aptId: data.aptId,
+                isAdmin: data.isAdmin,
+                uName: data.uName,
+                flatNumber: data.flatNumber
+            };
             res.status(200).send('Success');
             resolve();
         });
@@ -136,7 +140,7 @@ function login(req, res) {
  */
 function addMaintanance(req, res) {
     let data = {
-        date: req.body.date,
+        date: utils.msToSQLDate(req.body.date),
         flatNumber: req.body.flatNumber,
         amount: Number(req.body.amount),
         receivedBy: req.body.receivedBy
@@ -162,7 +166,7 @@ function addMaintanance(req, res) {
  */
 function addExpenses(req, res) {
     let data = {
-        date: Number(req.body.date),
+        date: utils.msToSQLDate(req.body.date),
         expenseFor: req.body.expenseFor,
         amount: Number(req.body.amount),
         paidBy: req.body.paidBy
@@ -177,10 +181,58 @@ function addExpenses(req, res) {
     });
 }
 
+
+function getAddressBook(req, res) {
+    db.query('SELECT flatNumber, uName, email, uMobile FROM user WHERE aptId=?', [req.session.user.aptId]).then((data) => {
+        res.json(data);
+    }).catch((err) => {
+        res.status(500).send(err);
+    });
+}
+
+function getExpances(req, res) {
+    var range = utils.getMonthDateRange(Number(req.body.year), Number(req.body.month));
+    let q = 'SELECT SUM(amount) amount FROM expense WHERE DATE(date) < ?';
+    db.query(q, [utils.msToSQLDate(range.startDate.valueOf())]).then((carryOver) => {
+        carryOver = carryOver[0];
+        carryOver.amount = carryOver.amount || 0;
+        carryOver.id = '#';
+        carryOver.date = range.startDate.toDate();
+        carryOver.expenseFor = 'CARRY-OVER';
+        carryOver.paidBy = '-';
+        carryOver.checkNumber = '-';
+
+        let q = 'SELECT id, date, expenseFor, amount, paidBy, checkNumber FROM expense WHERE date >= ? AND date <= ? ORDER BY date';
+        db.query(q, [utils.msToSQLDate(range.startDate.valueOf()), utils.msToSQLDate(range.endDate.valueOf())]).then((data) => {
+            let totalExp = 0, income = 0;
+            data.forEach(element => {
+                if(element.amount < 0){
+                    totalExp = totalExp + element.amount;
+                } else {
+                    income = income + element.amount;
+                }
+                
+            });
+            
+            data.unshift(carryOver);
+            data.push({expenseFor: 'Total Expense (Rs.)', amount: -1 * totalExp});
+            data.push({expenseFor: 'Cash on hand (Rs.)', amount: carryOver.amount + income + totalExp}); //total expense already in -ve
+
+            res.json(data);
+        }).catch((err) => {
+            res.status(500).send(err);
+        });
+    }).catch((err) => {
+        res.status(500).send(err);
+    });   
+}
+
 module.exports = {
     addExpenses,
     addMaintanance,
     login,
     residentReg,
-    apartmentReg
+    apartmentReg,
+    getAddressBook,
+    getExpances
 }

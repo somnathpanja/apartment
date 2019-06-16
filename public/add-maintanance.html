@@ -10,6 +10,8 @@
     <title>Signin Template · Bootstrap</title>
     <!-- development version, includes helpful console warnings -->
     <!-- https://vuelidate.netlify.com/#sub-basic-form -->
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
     <link href="bootstrap-4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <script src="bootstrap-4.3.1/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -21,7 +23,8 @@
     <div id="app-1" class="container" style="max-width: 400px;">
         <pre></pre>
         <h3>Accept Maintanance</h3>
-        <small class="form-text text-muted">{{ uName }} | {{ email }} | {{ ip }} | All activities will be logged for auditing.</small>
+        <small class="form-text text-muted">{{ uName }} | {{ email }} | {{ ip }} | All activities will be logged for
+            auditing.</small>
         <pre></pre>
         <div class="form-group">
             <p>
@@ -32,10 +35,11 @@
                 <label>Flat Number</label>
                 <select v-model="flatNumber" placeholder="Select Flat Number" class="form-control">
                     <option disabled value="">Please select one</option>
-                    <option v-for="n in 8" >SF-10{{ n }}</option>
-                    <option v-for="n in 8" >SF-20{{ n }}</option>
-                    <option v-for="n in 8" >SF-30{{ n }}</option>
-                    <option v-for="n in 8" >SF-40{{ n }}</option>
+                    <option v-for="n in 8">G-00{{ n }}</option>
+                    <option v-for="n in 8">SF-10{{ n }}</option>
+                    <option v-for="n in 8">SF-20{{ n }}</option>
+                    <option v-for="n in 8">SF-30{{ n }}</option>
+                    <option v-for="n in 8">SF-40{{ n }}</option>
                 </select>
             </p>
             <p>
@@ -94,18 +98,19 @@
                     var results = regex.exec(location.search);
                     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
                 },
-                who: function(){
+                who: function () {
                     var self = this;
                     this.$http.get('/who').then(function onSuccess(res) {
                         let data = res.body;
                         self.uName = data.uName;
                         self.email = data.email;
                         self.ip = data.ip;
-                        if(!self.email) {
+                        if (!self.email && !self.isAdmin) {
+                            alert('Session Expired...! Please login again!');
                             window.location.href = 'login.html';
                         }
                     }, function onError(data) {
-                        alert(JSON.stringify(data));
+                        alert('Session Expired...! Please login again!');
                         window.location.href = 'login.html';
                     });
                 },

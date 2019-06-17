@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v3.8.5">
+  <title>Signin Template · Bootstrap</title>
+  <!-- development version, includes helpful console warnings -->
+  <!-- https://vuelidate.netlify.com/#sub-basic-form -->
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"></script>
+  <link href="bootstrap-4.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <script src="bootstrap-4.3.1/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+  <script src="validator.js"></script>
+</head>
+
+<body id="main" class="container fill">
+  <pre></pre>
+  <div id="app-1" style="margin:2px;padding: 5px; border-width: 1px; border-color: black;border-style:solid;">
+    <h4 style="text-align: center;padding-top: 10px;text-decoration: underline;">CASH RECEIPT</h4>
+    <h6 style="text-align: center;padding-top: 5px;">SSK RESIDENCY OWNER’S WELFARE ASSOCIATION</h6>
+    <div style="text-align: justify; text-justify:auto;padding-top: 5px;font-size: medium;">
+      <b>Address:</b> #5&#38;6, AECS Layout, Block-B, Singasandra, Bangalore. Pin: 560068, Landmark: Aditya Kalyan Mantappa
+    </div>
+    <div
+      style="height:1px;margin-top:5px; margin-bottom:5px; border-width: 1px; border-color:black;border-style:solid;">
+    </div>
+    <h6 style="text-align: left;padding-top: 10px;"><b>Serial No: </b>SSK-M-SL-1</h6>
+    <h6 style="text-align: left;padding-top: 10px;"><b>Date: </b>12/2/2019</h6>
+
+    <h6 style="text-align: justify; text-justify:auto;padding-top: 10px;line-height: 2;"><b>Received Amount (Rs.):</b>
+      <u>&nbsp;&nbsp;&nbsp;1800.00&nbsp;&nbsp;&nbsp;</u> from Mr./Mrs: <i>Somnath Panja</i>, <b>Flat No: </b>
+      <u>&nbsp;SF-002&nbsp;</u> for the month of
+      <u>&nbsp;May 2019&nbsp;</u>
+      as Maintenance charges.</h6>
+
+    <h6 style="text-align: left;padding-top: 10px;"><b>Received by: </b>Mr. VAMSI</h6>
+    <h6 style="text-align: left;padding-top: 5px;"><b>Paid By: </b>Cash</h6>
+    <h6 style="text-align: left;padding-top: 5px;"><b>Check Number: </b>432212345678</h6>
+    <h6 style="text-align: justify;padding-top: 15px;"><b><i> This is a computer generated document. No signature is required.</i></b></h6>
+  </div>
+  <div style="text-align: center;">
+      <button class="btn btn-info" onclick="view_expenses()">Download</button>
+  </div>
+  
+  <script>
+    function download_me_slip() {
+      location.href = "register-resident.html";
+    }
+
+    function email_me_slip() {
+      location.href = "register-apartment.html";
+    }
+
+    function view_expenses() {
+      location.href = "view-expenses.html";
+    }
+
+    function logout() {
+      location.href = "login.html";
+    }
+
+    var app5 = new Vue({
+      el: '#app-1',
+      data: {
+        uName: ''
+      },
+      mounted: function () {
+        this.$nextTick(function () {
+          // Code that will run only after the
+          // entire view has been rendered
+          this.who();
+          // var width = Number($('#main').css('width').replace('px', ''));
+          // var height = Number($('#main').css('height').replace('px', ''));
+          // $('#app-1').css('max-height', '100%');
+          // alert(width + ',' + height);
+        });
+      },
+      methods: {
+        params: function (name) {
+          name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+          var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+          var results = regex.exec(location.search);
+          return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        },
+        who: function () {
+          var self = this;
+          this.$http.get('/who').then(function onSuccess(res) {
+            let data = res.body;
+            self.uName = data.uName;
+            self.email = data.email;
+            self.flatNumber = data.flatNumber;
+            self.ip = data.ip;
+            if (!self.email) {
+              alert('Session Expired...! Please login again!');
+              window.location.href = 'login.html';
+            }
+          }, function onError(data) {
+            alert('Session Expired...! Please login again!');
+            window.location.href = 'login.html';
+          });
+        },
+        reverseMessage: function () {
+          if (!this.isValid()) return;
+          this.error = '';
+          alert('valid');
+
+          this.$http.post('/login', {
+            email: this.email,
+            password: this.password
+          }).then(function onSuccess(data) {
+            window.location.href = 'home.html?token=' + data.token;
+          }, function onError(data) {
+            alert('Session Expired...! Please login again!');
+            window.location.href = 'login.html';
+          });
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>

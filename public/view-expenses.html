@@ -2,128 +2,154 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Jekyll v3.8.5">
-    <title>Signin Template · Bootstrap</title>
-    <!-- development version, includes helpful console warnings -->
-    <!-- https://vuelidate.netlify.com/#sub-basic-form -->
-    <script src="https://code.jquery.com/jquery-3.4.1.js"
-        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
-    <link href="bootstrap-4.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <script src="bootstrap-4.3.1/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
-    <!-- <script src="https://unpkg.com/vue/dist/vue.js"></script> -->
-    <!-- <script src="https://unpkg.com/vue-cookies@1.5.12/vue-cookies.js"></script> -->
-    <script src="validator.js"></script>
-    <link href="css/my.css" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v3.8.5">
+  <title>Signin Template · Bootstrap</title>
+  <!-- development version, includes helpful console warnings -->
+  <!-- https://vuelidate.netlify.com/#sub-basic-form -->
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"></script>
+  <link href="bootstrap-4.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <script src="bootstrap-4.3.1/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+  <!-- <script src="https://unpkg.com/vue/dist/vue.js"></script> -->
+  <!-- <script src="https://unpkg.com/vue-cookies@1.5.12/vue-cookies.js"></script> -->
+  <script src="validator.js"></script>
+  <script src="html2canvas.min.js"></script>
+  <script src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script>
+  <link href="css/my.css" rel="stylesheet">
 </head>
 
 <body class="container">
-    <div id="app-1" class="container" style="max-width: 400px;">
-        <pre></pre>
-        <h3>View Expenses</h3>
-        <small class="form-text text-muted">{{ uName }} | {{ email }} | {{ ip }} | <a href="/" style="text-decoration: underline;"> Home</a></small> 
-        <pre></pre>
+  <div id="app-1" class="container" style="max-width: 400px;">
+    <pre></pre>
+    <h3>View Expenses</h3>
+    <small class="form-text text-muted">{{ uName }} | {{ email }} | {{ ip }} | <a href="/"
+        style="text-decoration: underline;"> Home</a></small>
+    <pre></pre>
 
-        <table>
-            <tr>
-                <td>Year:</td>
-                <td>
-                    <select v-model="year" class="form-control">
-                        <option v-for="n in 5">20{{ 18+n }}</option>
-                    </select>
-                </td>
-                <td>Month:</td>
-                <td>
-                    <select v-model="month" class="form-control">
-                        <option v-for="n in 12">{{ n }}</option>
-                    </select>
-                </td>
-                <td><button class="btn btn-info" v-on:click="getData">View</button></td>
-            </tr>
-        </table>
-        <pre></pre>
-        <table class="table" style="border: 1; padding:2rem; font-size:small;">
-            <thead>
-                <th style="background-color:#e3ebf7">ID</th>
-                <th style="background-color:#eef9de">Date</th>
-                <th colspan="1" style="background-color:#f2f0e3">Details</th>
-                <th style="background-color:#eef9de">Amount</th>
-            </thead>
-            <tbody>
-                <tr v-for="item in expense">
-                    <td style="background-color:#e3ebf7">{{ item.id }}</td>
-                    <td style="background-color:#eef9de">{{ item.date ? new Date(item.date).toLocaleDateString() : '' }}</td>
-                    <td style="background-color:#f2f0e3">{{ item.expenseFor ? item.expenseFor.substring(0,50) : '' }}</td>
-                    <td style="background-color:#eef9de" class="text-right">{{ item.amount }}</td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="form-group">
-            <p class="text-center">
-                <button class="btn btn-warning" onclick="go_home()">Home</button>
-            </p>
-        </div>
+    <table>
+      <tr>
+        <td>Year:</td>
+        <td>
+          <select v-model="year" class="form-control">
+            <option v-for="n in 5">20{{ 18+n }}</option>
+          </select>
+        </td>
+        <td>Month:</td>
+        <td>
+          <select v-model="month" class="form-control">
+            <option v-for="n in 12">{{ n }}</option>
+          </select>
+        </td>
+        <td><button class="btn btn-info" v-on:click="getData">View</button></td>
+      </tr>
+    </table>
+    <pre></pre>
+    <table id="table_exp" class="table" style="border: 1; padding:2rem; font-size:small;">
+      <thead>
+        <th style="background-color:#e3ebf7">ID</th>
+        <th style="background-color:#eef9de">Date</th>
+        <th colspan="1" style="background-color:#f2f0e3">Details</th>
+        <th style="background-color:#eef9de">Amount</th>
+      </thead>
+      <tbody>
+        <tr v-for="item in expense">
+          <td style="background-color:#e3ebf7">{{ item.id }}</td>
+          <td style="background-color:#eef9de">{{ item.date ? new Date(item.date).toLocaleDateString() : '' }}</td>
+          <td style="background-color:#f2f0e3">{{ item.expenseFor ? item.expenseFor.substring(0,50) : '' }}</td>
+          <td style="background-color:#eef9de" class="text-right">{{ item.amount }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="form-group">
+      <p class="text-center">
+        <button class="btn btn-info" onclick="print()">Download</button>
+        <button class="btn btn-warning" onclick="go_home()">Home</button>
+      </p>
     </div>
-    <script>
+  </div>
+  <script>
+    function go_home() {
+      location.href = "/";
+    }
 
-        function go_home() { location.href = "/"; }
+    function print2(quality = 2) {
+      const filename = 'CashReceipt.pdf';
 
-        var app5 = new Vue({
-            el: '#app-1',
-            data: {
-                year: new Date().getFullYear(),
-                month: new Date().getMonth() + 1,
-                uName: '',
-                email: '',
-                ip: '',
-                expense: {}
-            },
-            mounted: function () {
-                this.$nextTick(function () {
-                    this.who();
-                });
-            },
-            methods: {
-                params: function (name) {
-                    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-                    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-                    var results = regex.exec(location.search);
-                    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-                },
-                who: function () {
-                    var self = this;
-                    this.$http.get('/who').then(function onSuccess(res) {
-                        let data = res.body;
-                        self.uName = data.uName;
-                        self.email = data.email;
-                        self.ip = data.ip;
-                        if (!self.email) {
-                            window.location.href = 'login.html';
-                        } else {
-                            self.getData();
-                        }
-                    }, function onError(data) {
-                        alert('Session Expired...! Please login again!');
-                        window.location.href = 'login.html';
-                    });
-                },
-                getData: function () {
-                    var self = this;
-                    this.$http.post('/expense/get', { year: self.year, month: self.month }).then(function onSuccess(res) {
-                        self.expense = res.body;
-                    }, function onError(data) {
-                        alert('Session Expired...! Please login again!');
-                        window.location.href = 'login.html';
-                    });
-                }
-            }
+      html2canvas(document.querySelector('#table_exp'), {
+        scale: quality
+      }).then(canvas => {
+        var width = Number($(canvas).css('width').replace('px', ''));
+        var height = Number($(canvas).css('height').replace('px', ''));
+        var imgW = width * 0.7;
+        var imgH = height * 0.7;
+
+        // orientation: 'landscape', unit: 'in', format: [4, 2]
+        let pdf = new jsPDF('auto', 'px', [width, height]);
+        pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0,0, imgW, imgH);
+        pdf.save(filename);
+      });
+    }
+
+    var app5 = new Vue({
+      el: '#app-1',
+      data: {
+        year: new Date().getFullYear(),
+        month: new Date().getMonth() + 1,
+        uName: '',
+        email: '',
+        ip: '',
+        expense: {}
+      },
+      mounted: function () {
+        this.$nextTick(function () {
+          this.who();
         });
-    </script>
+      },
+      methods: {
+        params: function (name) {
+          name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+          var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+          var results = regex.exec(location.search);
+          return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        },
+        who: function () {
+          var self = this;
+          this.$http.get('/who').then(function onSuccess(res) {
+            let data = res.body;
+            self.uName = data.uName;
+            self.email = data.email;
+            self.ip = data.ip;
+            if (!self.email) {
+              window.location.href = 'login.html';
+            } else {
+              self.getData();
+            }
+          }, function onError(data) {
+            alert('Session Expired...! Please login again!');
+            window.location.href = 'login.html';
+          });
+        },
+        getData: function () {
+          var self = this;
+          this.$http.post('/expense/get', {
+            year: self.year,
+            month: self.month
+          }).then(function onSuccess(res) {
+            self.expense = res.body;
+          }, function onError(data) {
+            alert('Session Expired...! Please login again!');
+            window.location.href = 'login.html';
+          });
+        }
+      }
+    });
+  </script>
 </body>
 
 </html>

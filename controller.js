@@ -155,6 +155,16 @@ function addMaintanance(req, res) {
     });
 }
 
+function getMaintanance(req, res) {
+  let q = 'SELECT id, date, flatNumber, amount, receivedBy, checkNumber FROM maintanance WHERE flatNumber = ? AND YEAR(date) = ? AND MONTH(date) = ?';
+
+  db.query(q, [req.session.user.flatNumber, Number(req.body.year), Number(req.body.month)]).then((data) => {
+    res.json(data);
+  }).catch((err) => {
+    res.status(500).send(err);
+  });
+}
+
 /**
  * 
  * @param {*} req 
@@ -234,5 +244,6 @@ module.exports = {
     residentReg,
     apartmentReg,
     getAddressBook,
-    getExpances
+    getExpances,
+    getMaintanance
 }

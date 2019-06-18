@@ -30,19 +30,22 @@
         <pre></pre>
         <div class="form-group">
             <p class="text-center">
-                <button class="btn btn-warning" onclick="add_maintanance()">Add Maintanance Received</button>
+                <button class="btn btn-warning" style="width: 100%;" onclick="add_maintanance()">Receive Maintanance</button>
             </p>
             <p class="text-center">
-                <button class="btn btn-warning" onclick="add_expenses()">Add New Expenses</button>
+                <button class="btn btn-warning" style="width: 100%;" onclick="add_expenses()">Add Expense</button>
             </p>
             <p class="text-center">
-                <button class="btn btn-info" onclick="view_expenses()">View Expenses</button>
+                <button class="btn btn-info" style="width: 100%;" onclick="view_expenses()">View Expenses</button>
             </p>
             <p class="text-center">
-                <button class="btn btn-info" onclick="address_book()">Address Book</button>
+                <button class="btn btn-info" style="width: 100%;" onclick="address_book()">People</button>
             </p>
             <p class="text-center">
-                <button class="btn btn-primary" onclick="logout()">Logout</button>
+                <button class="btn btn-primary" style="width: 100%;" onclick="userHome()">My Home</button>
+            </p>
+            <p class="text-center">
+                <button class="btn btn-primary" style="width: 100%;" onclick="logout()">Logout</button>
             </p>
         </div>
     </div>
@@ -52,6 +55,7 @@
         function add_expenses() { location.href = "add-expenses.html"; }
         function view_expenses() { location.href = "view-expenses.html"; }
         function address_book() { location.href = "address-book.html"; }
+        function userHome() { location.href = "user-home.html"; }
         function logout() { location.href = "logout"; }
 
         var app5 = new Vue({
@@ -74,6 +78,21 @@
                     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
                 },
                 who: function () {
+                    var self = this;
+                    this.$http.get('/who').then(function onSuccess(res) {
+                        let data = res.body;
+                        self.uName = data.uName;
+                        self.email = data.email;
+                        self.ip = data.ip;
+                        if (!self.email) {
+                            window.location.href = 'login.html';
+                        }
+                    }, function onError(data) {
+                        alert('Session Expired...! Please login again!');
+                        window.location.href = 'login.html';
+                    });
+                },
+                getData: function () {
                     var self = this;
                     this.$http.get('/who').then(function onSuccess(res) {
                         let data = res.body;

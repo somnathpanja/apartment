@@ -107,6 +107,10 @@ app.post('/maintance/add', isUser, isAdmin, function (req, res) {
     controller.addMaintanance(req, res);
 });
 
+app.post('/maintance/get', isUser, function (req, res) {
+    controller.getMaintanance(req, res);
+});
+
 app.post('/expense/add', isUser, isAdmin, function (req, res) {
     controller.addExpenses(req, res);
 });

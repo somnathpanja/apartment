@@ -2,105 +2,122 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Jekyll v3.8.5">
-    <title>Signin Template · Bootstrap</title>
-    <!-- development version, includes helpful console warnings -->
-    <!-- https://vuelidate.netlify.com/#sub-basic-form -->
-    <script src="https://code.jquery.com/jquery-3.4.1.js"
-        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
-    <link href="bootstrap-4.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <script src="bootstrap-4.3.1/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
-    <script src="validator.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v3.8.5">
+  <title>Signin Template · Bootstrap</title>
+  <!-- development version, includes helpful console warnings -->
+  <!-- https://vuelidate.netlify.com/#sub-basic-form -->
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"></script>
+  <link href="bootstrap-4.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <script src="bootstrap-4.3.1/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+  <script src="validator.js"></script>
 </head>
 
 <body class="container">
-    <div id="app-1" class="container" style="max-width: 400px;">
-        <pre></pre>
-        <h3>Welcome {{ uName }}!</h3>
-        <small class="form-text text-muted">{{ email }} | {{ flatNumber }} | IP: {{ ip }}</small>
-        <pre></pre>
-        <div class="form-group">
-            <p class="text-center">
-                <button class="btn btn-warning" onclick="download_me_slip()">Download Maintanance Paid Slip</button>
-            </p>
-            <!-- <p class="text-center">
-                    <button class="btn btn-success" onclick="email_me_slip()">Email Me Maintanance Paid Slip</button>
-            </p> -->
-            <p class="text-center">
-                <button class="btn btn-info" onclick="view_expenses()">View Apartment Expenses</button>
-            </p>
-            <p class="text-center">
-                <button class="btn btn-primary" onclick="logout()">Logout</button>
-            </p>
+  <div id="app-1" class="container" style="max-width: 400px;">
+    <pre></pre>
+    <h3>Welcome {{ uName }}!</h3>
+    <small class="form-text text-muted">{{ email }} | {{ flatNumber }} | IP: {{ ip }}</small>
+    <pre></pre>
+    <div class="form-group">
+      <p>
+        <hr>
+        <p class="text-center">
+          <button class="btn btn-primary" style="width: 100%;" onclick="view_expenses()">View Apartment
+            Expenses</button>
+        </p>
+        <hr>
+        <div style="background-color: azure;padding-top: 10px;padding-bottom: 10px;">
+          <table style="width: 100%;">
+            <tr>
+              <td>Year:</td>
+              <td>
+                <select v-model="year" class="form-control">
+                  <option v-for="n in 5">20{{ 18+n }}</option>
+                </select>
+              </td>
+              <td>Month:</td>
+              <td>
+                <select v-model="month" style="min-width: 100px;" class="form-control">
+                  <option v-for="n in 12">{{ n }}</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+          <button class="btn btn-success" style="width: 100%;margin-top: 15px;"
+            v-on:click="getMaintananceSlip">&darr;Download maintanance receipt</button>
         </div>
+        <hr>
+        <p class="text-center">
+          <button class="btn btn-danger" style="width: 100%;" onclick="logout()">Logout</button>
+        </p>
+      </p>
     </div>
-    <script>
+  </div>
+  <script>
+    function download_me_slip() {
+      location.href = "register-resident.html";
+    }
 
-        function download_me_slip() { location.href = "register-resident.html"; }
-        function email_me_slip() { location.href = "register-apartment.html"; }
-        function view_expenses() { location.href = "view-expenses.html"; }
-        function logout() { location.href = "login.html"; }
+    function view_expenses() {
+      location.href = "view-expenses.html";
+    }
 
-        var app5 = new Vue({
-            el: '#app-1',
-            data: {
-                uName: ''
-            },
-            mounted: function () {
-                this.$nextTick(function () {
-                    // Code that will run only after the
-                    // entire view has been rendered
-                    this.who();
-                });
-            },
-            methods: {
-                params: function (name) {
-                    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-                    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-                    var results = regex.exec(location.search);
-                    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-                },
-                who: function () {
-                    var self = this;
-                    this.$http.get('/who').then(function onSuccess(res) {
-                        let data = res.body;
-                        self.uName = data.uName;
-                        self.email = data.email;
-                        self.flatNumber = data.flatNumber;
-                        self.ip = data.ip;
-                        if (!self.email) {
-                            alert('Session Expired...! Please login again!');
-                            window.location.href = 'login.html';
-                        }
-                    }, function onError(data) {
-                        alert('Session Expired...! Please login again!');
-                        window.location.href = 'login.html';
-                    });
-                },
-                reverseMessage: function () {
-                    if (!this.isValid()) return;
-                    this.error = '';
-                    alert('valid');
+    function logout() {
+      location.href = "logout";
+    }
 
-                    this.$http.post('/login', {
-                        email: this.email,
-                        password: this.password
-                    }).then(function onSuccess(data) {
-                        window.location.href = 'home.html?token=' + data.token;
-                    }, function onError(data) {
-                        alert('Session Expired...! Please login again!');
-                        window.location.href = 'login.html';
-                    });
-                }
-            }
+    var app5 = new Vue({
+      el: '#app-1',
+      data: {
+        uName: '',
+        email: '',
+        year: new Date().getFullYear(),
+        month: new Date().getMonth() + 1,
+      },
+      mounted: function () {
+        this.$nextTick(function () {
+          // Code that will run only after the
+          // entire view has been rendered
+          this.who();
         });
-    </script>
+      },
+      methods: {
+        params: function (name) {
+          name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+          var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+          var results = regex.exec(location.search);
+          return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        },
+        who: function () {
+          var self = this;
+          this.$http.get('/who').then(function onSuccess(res) {
+            let data = res.body;
+            self.uName = data.uName;
+            self.email = data.email;
+            self.flatNumber = data.flatNumber;
+            self.ip = data.ip;
+            if (!self.email) {
+              alert('Session Expired...! Please login again!');
+              window.location.href = 'login.html';
+            }
+          }, function onError(data) {
+            alert('Session Expired...! Please login again!');
+            window.location.href = 'login.html';
+          });
+        },
+        getMaintananceSlip: function () {
+          window.location.href = 'maintanance-slip.html?year=' + this.year + '&month=' + this.month;
+        }
+      }
+    });
+  </script>
 </body>
 
 </html>

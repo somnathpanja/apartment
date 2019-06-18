@@ -144,6 +144,7 @@
                         let data = res.body;
                         self.uName = data.uName;
                         self.email = data.email;
+                        self.paidBy = self.uName; 
                         self.ip = data.ip;
                         if (!self.email && !self.isAdmin) {
                             alert('Session Expired...! Please login again!');

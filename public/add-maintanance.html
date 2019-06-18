@@ -2,163 +2,189 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Jekyll v3.8.5">
-    <title>Signin Template · Bootstrap</title>
-    <!-- development version, includes helpful console warnings -->
-    <!-- https://vuelidate.netlify.com/#sub-basic-form -->
-    <script src="https://code.jquery.com/jquery-3.4.1.js"
-        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
-    <link href="bootstrap-4.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <script src="bootstrap-4.3.1/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
-    <script src="validator.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v3.8.5">
+  <title>Signin Template · Bootstrap</title>
+  <!-- development version, includes helpful console warnings -->
+  <!-- https://vuelidate.netlify.com/#sub-basic-form -->
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"></script>
+  <link href="bootstrap-4.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <script src="bootstrap-4.3.1/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+  <script src="validator.js"></script>
 </head>
 
 <body class="container">
-    <div id="app-1" class="container" style="max-width: 400px;">
-        <pre></pre>
-        <h3>Accept Maintanance</h3>
-        <small class="form-text text-muted">{{ uName }} | {{ email }} | {{ ip }} | <a href="/" style="text-decoration: underline;"> Home</a></small> 
-        <pre></pre>
-        <div class="form-group">
-            <p>
-                <label>Date:</label>
-                <input v-model="date" type="date" placeholder="Date" class="form-control">
-            </p>
-            <p>
-                <label>Flat Number</label>
-                <select v-model="flatNumber" placeholder="Select Flat Number" class="form-control">
-                    <option disabled value="">Please select one</option>
-                    <option v-for="n in 8">G-00{{ n }}</option>
-                    <option v-for="n in 8">SF-10{{ n }}</option>
-                    <option v-for="n in 8">SF-20{{ n }}</option>
-                    <option v-for="n in 8">SF-30{{ n }}</option>
-                    <option v-for="n in 8">SF-40{{ n }}</option>
-                </select>
-            </p>
-            <p>
-                <label>Received By Check?</label>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <div class="input-group-text">
-                            <input v-model="byCheck" type="checkbox" aria-label="Check">
-                        </div>
-                    </div>
-                    <input v-model="checkNumber" type="text" class="form-control" placeholder="Type Check number here"
-                        aria-label="Check">
-                </div>
-            </p>
-            <p>
-                <label>Amount (Rs.)</label>
-                <input v-model="amount" placeholder="Amount" class="form-control">
-            </p>
-            <p>
-                <label>Received By (Your Name)</label>
-                <input v-model="receivedBy" disabled="true" v-bind:placeholder="uName" class="form-control">
-            </p>
-            <h5 id="error" class="form-text text-danger">{{ error }}</h5>
-            <p class="text-center">
-                <button class="btn btn-primary" v-on:click="reverseMessage">Save</button>
-            </p>
+  <div id="app-1" class="container" style="max-width: 400px;">
+    <pre></pre>
+    <h3>Accept Maintanance</h3>
+    <small class="form-text text-muted">{{ uName }} | {{ email }} | {{ ip }} | <a href="/"
+        style="text-decoration: underline;"> Home</a></small>
+    <pre></pre>
+    <div class="form-group">
+      <p>
+        <label>Date:</label>
+        <input v-model="date" type="date" placeholder="Date" class="form-control">
+      </p>
+      <p>
+        <label>Flat Number</label>
+        <select v-model="flatNumber" placeholder="Select Flat Number" class="form-control">
+          <option disabled value="">Please select one</option>
+          <option v-for="n in 8">G-00{{ n }}</option>
+          <option v-for="n in 8">SF-10{{ n }}</option>
+          <option v-for="n in 8">SF-20{{ n }}</option>
+          <option v-for="n in 8">SF-30{{ n }}</option>
+          <option v-for="n in 8">SF-40{{ n }}</option>
+        </select>
+      </p>
+      <p>
+        <label>Received By Check?</label>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <div class="input-group-text">
+              <input v-model="byCheck" type="checkbox" aria-label="Check">
+            </div>
+          </div>
+          <input v-model="checkNumber" type="text" class="form-control" placeholder="Type Check number here"
+            aria-label="Check">
         </div>
+      </p>
+      <p>
+        <label>Amount (Rs.)</label>
+        <input v-model="amount" placeholder="Amount" class="form-control">
+      </p>
+      <p>
+        <label>Received By (Your Name)</label>
+        <input v-model="receivedBy" disabled="true" v-bind:placeholder="uName" class="form-control">
+      </p>
+      <h5 id="error" class="form-text text-danger">{{ error }}</h5>
+      <p class="text-center">
+        <button class="btn btn-primary" v-on:click="reverseMessage">Save</button>
+      </p>
     </div>
-    <script>
-        var app5 = new Vue({
-            el: '#app-1',
-            data: {
-                date: '',
-                flatNumber: '',
-                byCheck: false,
-                checkNumber: '',
-                amount: '',
-                receivedBy: '',
-                error: '',
-                //---extra
-                uName: '',
-                email: '',
-                ip: ''
-            },
-            mounted: function () {
-                this.$nextTick(function () {
-                    // Code that will run only after the
-                    // entire view has been rendered
-                    this.who();
-                });
-            },
-            methods: {
-                isValid: function () {
-                    //--
-                    var error = validator.required('Date', this.date);
-                    if (error) { this.error = error; return false; }
-
-                    //--
-                    var error = validator.required('Flat Number', this.flatNumber);
-                    if (error) { this.error = error; return false; }
-
-                    //--
-                    error = validator.required('Amount', this.amount);
-                    if (error) { this.error = error; return false; }
-                    error = validator.isNumber('Amount', this.amount);
-                    if (error) { this.error = error; return false; }
-
-                    //--
-                    if (this.byCheck) {
-                        error = validator.required('Check number', this.checkNumber);
-                        if (error) { this.error = error; return false; }
-                        error = validator.isNumber('Check number', this.checkNumber);
-                        if (error) { this.error = error; return false; }
-                    }
-                    this.error = '';
-                    return true;
-                },
-                params: function (name) {
-                    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-                    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-                    var results = regex.exec(location.search);
-                    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-                },
-                who: function () {
-                    var self = this;
-                    this.$http.get('/who').then(function onSuccess(res) {
-                        let data = res.body;
-                        self.uName = data.uName;
-                        self.email = data.email;
-                        self.ip = data.ip;
-                        if (!self.email && !self.isAdmin) {
-                            alert('Session Expired...! Please login again!');
-                            window.location.href = 'login.html';
-                        }
-                    }, function onError(data) {
-                        alert('Session Expired...! Please login again!');
-                        window.location.href = 'login.html';
-                    });
-                },
-
-                reverseMessage: function () {
-                    if (!this.isValid()) return;
-
-                    this.$http.post('/maintance/add', {
-                        date: new Date(this.date).getTime(),
-                        flatNumber: this.flatNumber,
-                        byCheck: this.byCheck,
-                        checkNumber: this.checkNumber,
-                        amount: this.amount,
-                        receivedBy: this.receivedBy
-                    }).then(function onSuccess(data) {
-                        alert('Saved Successfully..');
-                        window.location.href = 'admin-home.html';
-                    }, function onError(data) {
-                        alert(JSON.stringify(data));
-                    });
-                }
-            }
+  </div>
+  <script>
+    var app5 = new Vue({
+      el: '#app-1',
+      data: {
+        date: '',
+        flatNumber: '',
+        byCheck: false,
+        checkNumber: '',
+        amount: '',
+        receivedBy: '',
+        error: '',
+        //---extra
+        uName: '',
+        email: '',
+        ip: ''
+      },
+      mounted: function () {
+        this.$nextTick(function () {
+          // Code that will run only after the
+          // entire view has been rendered
+          this.who();
         });
-    </script>
+      },
+      methods: {
+        isValid: function () {
+          //--
+          var error = validator.required('Date', this.date);
+          if (error) {
+            this.error = error;
+            return false;
+          }
+
+          //--
+          var error = validator.required('Flat Number', this.flatNumber);
+          if (error) {
+            this.error = error;
+            return false;
+          }
+
+          //--
+          error = validator.required('Amount', this.amount);
+          if (error) {
+            this.error = error;
+            return false;
+          }
+          error = validator.isNumber('Amount', this.amount);
+          if (error) {
+            this.error = error;
+            return false;
+          }
+
+          //--
+          if (this.byCheck) {
+            error = validator.required('Check number', this.checkNumber);
+            if (error) {
+              this.error = error;
+              return false;
+            }
+            error = validator.isNumber('Check number', this.checkNumber);
+            if (error) {
+              this.error = error;
+              return false;
+            }
+          }
+          this.error = '';
+          return true;
+        },
+        params: function (name) {
+          name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+          var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+          var results = regex.exec(location.search);
+          return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        },
+        who: function () {
+          var self = this;
+          this.$http.get('/who').then(function onSuccess(res) {
+            let data = res.body;
+            self.uName = data.uName;
+            self.receivedBy = self.uName;
+            self.email = data.email;
+            self.ip = data.ip;
+            if (!self.email && !self.isAdmin) {
+              alert('Session Expired...! Please login again!');
+              window.location.href = 'login.html';
+            }
+          }, function onError(data) {
+            alert('Session Expired...! Please login again!');
+            window.location.href = 'login.html';
+          });
+        },
+
+        reverseMessage: function () {
+          if (!this.isValid()) return;
+
+          this.$http.post('/maintance/add', {
+            date: new Date(this.date).getTime(),
+            flatNumber: this.flatNumber,
+            byCheck: this.byCheck,
+            checkNumber: this.checkNumber,
+            amount: this.amount,
+            receivedBy: this.receivedBy
+          }).then(function onSuccess(data) {
+            alert('Saved Successfully..');
+            window.location.href = 'admin-home.html';
+          }, function onError(data) {
+            if (data.status === 400) {
+              alert(JSON.stringify(data.body));
+            } else {
+              alert('Failed! Error:', JSON.stringify(data.body));
+              alert('Session Expired...! Please login again!');
+              window.location.href = 'login.html';
+            }
+          });
+        }
+      }
+    });
+  </script>
 </body>
 
 </html>

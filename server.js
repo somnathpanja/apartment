@@ -127,15 +127,15 @@ app.post('/expense/get', function (req, res) {
 
 var server;
 
-if(process.NODE_ENV === 'production') {
+//if(process.NODE_ENV === 'production') {
   var sslOptions = {
     key: fs.readFileSync('certificate.key'),
     cert: fs.readFileSync('certificate.crt')
   };
 
   server = https.createServer(sslOptions, app);
-} else {
-  server = http.createServer(app);
-}
+// } else {
+//   server = http.createServer(app);
+// }
 
 server.listen(5867);

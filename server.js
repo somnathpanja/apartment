@@ -9,6 +9,7 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const KEY_CONF = require('./keys.json'); // Keys json has to be in the server
+const PORT = 5867;
 
 var MySQLStore = require('express-mysql-session')(session);
 
@@ -143,6 +144,6 @@ if (process.env.NODE_ENV === 'production') {
   server = http.createServer(app);
 }
 
-server.listen(5867, function () {
-  console.log(`App is listening listening on port ${port}! >`, process.env.NODE_ENV);
+server.listen(PORT, function () {
+  console.log(`App is listening listening on port ${PORT}! >`, process.env.NODE_ENV);
 });

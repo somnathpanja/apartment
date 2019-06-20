@@ -8,7 +8,6 @@ const path = require('path');
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
-const KEY_CONF = require('./keys.json'); // Keys json has to be in the server
 const PORT = 5867;
 
 var MySQLStore = require('express-mysql-session')(session);
@@ -134,6 +133,7 @@ app.post('/expense/get', function (req, res) {
 var server;
 
 if (process.env.NODE_ENV === 'production') {
+  const KEY_CONF = require('./keys.json'); // Keys json has to be in the server
   var sslOptions = {
     key: fs.readFileSync(KEY_CONF.key),
     cert: fs.readFileSync(KEY_CONF.crt)

@@ -1,5 +1,6 @@
 var db = require('./common/mysql');
 var utils = require('./common/utils');
+var _ = require('lodash');
 
 /**
  * 
@@ -100,7 +101,7 @@ function login(req, res) {
             data.flatNumber = results[0].flatNumber;
             resolve();
           } else {
-            reject('Invalid login details!');
+            reject('Wrong email id or password! Also make sure capslock is not on in your keyboard!');
           }
         });
       }
@@ -120,14 +121,17 @@ function login(req, res) {
       resolve();
     });
   }).catch((err) => {
-    req.session.destroy((err) => {
-      if (err) {
-        console.log(err);
+    req.session.destroy((sessionErr) => {
+      if (sessionErr) {
+        console.log('Session Error while destroying.', sessionErr);
       }
 
-      res.status(500).send(err);
+      if (_.isString(err)) {
+        res.status(400).send(err);
+      } else {
+        res.status(500).send(err);
+      }
     });
-
   });
 }
 

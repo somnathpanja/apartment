@@ -2,6 +2,8 @@
 deployment:
  tasks:
  - export DEPLOYPATH=/home/alpinin/apt/
+ - /bin/cp certificate.key $DEPLOYPATH
+ - /bin/cp certificate.crt $DEPLOYPATH
  - /bin/cp server.js $DEPLOYPATH
  - /bin/cp package.json $DEPLOYPATH
  - /bin/cp controller.js $DEPLOYPATH

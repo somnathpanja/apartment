@@ -67,7 +67,7 @@
                     error = validator.email('Email', this.email);
                     if (error) { this.error = error; return; }
                     //----
-                    error = validator.fixedLength('Password', this.password, 8);
+                    error = validator.required('Password', this.password);
                     if (error) { this.error = error; return false; }
 
                     this.error = '';

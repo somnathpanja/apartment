@@ -8,6 +8,7 @@ const path = require('path');
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
+const KEY_CONF = require('./keys.json'); // Keys json has to be in the server
 
 var MySQLStore = require('express-mysql-session')(session);
 
@@ -127,15 +128,15 @@ app.post('/expense/get', function (req, res) {
 
 var server;
 
-//if(process.NODE_ENV === 'production') {
+if(process.NODE_ENV === 'production') {
   var sslOptions = {
-    key: fs.readFileSync('certificate.key'),
-    cert: fs.readFileSync('certificate.crt')
+    key: fs.readFileSync(KEY_CONF.key),
+    cert: fs.readFileSync(KEY_CONF.crt)
   };
 
   server = https.createServer(sslOptions, app);
-// } else {
-//   server = http.createServer(app);
-// }
+} else {
+  server = http.createServer(app);
+}
 
 server.listen(5867);

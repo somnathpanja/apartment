@@ -77,7 +77,7 @@
                     if (!this.isValid()) return;
 
                     this.$http.post('/login', {
-                        email: this.email.toLowerCase(),
+                        email: this.email.toLowerCase().trim(),
                         password: this.password
                     }).then(function onSuccess(res) {
                         window.location.href = '/';

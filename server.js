@@ -6,6 +6,8 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const http = require('http');
+const https = require('https');
+const fs = require('fs');
 
 var MySQLStore = require('express-mysql-session')(session);
 
@@ -123,5 +125,17 @@ app.post('/expense/get', function (req, res) {
     controller.getExpances(req, res);
 });
 
-const server = http.createServer(app);
+var server;
+
+if(process.NODE_ENV === 'production') {
+  var sslOptions = {
+    key: fs.readFileSync('certificate.key'),
+    cert: fs.readFileSync('certificate.crt')
+  };
+
+  server = https.createServer(sslOptions, app);
+} else {
+  server = http.createServer(app);
+}
+
 server.listen(5867);
